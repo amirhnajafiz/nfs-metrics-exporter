@@ -1,2 +1,3 @@
-# nfs-metrics-exporter
-Prometheus exporter for NFS storage from client-side
+# NFS Metrics Exporter
+
+Cloud native Prometheus exporter for exporting NFS computation metrics from client-side.
