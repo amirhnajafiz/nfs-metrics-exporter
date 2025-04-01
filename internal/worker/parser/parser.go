@@ -12,7 +12,7 @@ func ParseNFSIoStat(input string) []*NFSIoStatType {
 
 	var (
 		currentMount string
-		currentStats *NFSIoStatType
+		currentStats NFSIoStatType
 		statsList    []*NFSIoStatType
 	)
 
@@ -21,21 +21,27 @@ func ParseNFSIoStat(input string) []*NFSIoStatType {
 
 		if strings.Contains(line, "mounted on") {
 			if currentMount != "" {
-				statsList = append(statsList, currentStats)
+				statsList = append(statsList, &currentStats)
 			}
 
 			parts := strings.Split(line, " mounted on ")
 			path := parts[0]
 			currentMount = parts[1]
-			currentStats = &NFSIoStatType{Path: path, MountPoint: currentMount}
+			currentStats = NFSIoStatType{Path: path, MountPoint: currentMount}
 		} else if strings.HasPrefix(line, "ops/s") {
 			// skip header
 		} else if strings.HasPrefix(line, "read:") || strings.HasPrefix(line, "write:") {
-			mode := strings.TrimSuffix(line, ":")
+			var mode string
+			if strings.HasPrefix(line, "read:") {
+				mode = "read"
+			} else {
+				mode = "write"
+			}
+
 			scanner.Scan()
 
 			values := strings.Fields(scanner.Text())
-			metrics := NFSIoStatMetricsType{
+			metrics := &NFSIoStatMetricsType{
 				OpsPerSec: ParseFloat(values[0]),
 				KBPerSec:  ParseFloat(values[1]),
 				KBPerOp:   ParseFloat(values[2]),
@@ -47,9 +53,9 @@ func ParseNFSIoStat(input string) []*NFSIoStatType {
 			}
 
 			if mode == "read" {
-				currentStats.Read = &metrics
+				currentStats.Read = metrics
 			} else if mode == "write" {
-				currentStats.Write = &metrics
+				currentStats.Write = metrics
 			}
 		} else if line != "" {
 			values := strings.Fields(line)
@@ -61,7 +67,7 @@ func ParseNFSIoStat(input string) []*NFSIoStatType {
 	}
 
 	if currentMount != "" {
-		statsList = append(statsList, currentStats)
+		statsList = append(statsList, &currentStats)
 	}
 
 	return statsList
