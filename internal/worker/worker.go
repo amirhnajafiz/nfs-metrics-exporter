@@ -6,15 +6,26 @@ import (
 	"strings"
 )
 
+type Metrics struct {
+	OpsPerSec float64
+	KBPerSec  float64
+	KBPerOp   float64
+	Retrans   float64
+	RTT       float64
+	Exec      float64
+	Queue     float64
+	Errors    float64
+}
+
 type NFSStats struct {
 	MountPoint string
 	OpsPerSec  float64
 	RPCBklog   float64
-	Read       map[string]float64
-	Write      map[string]float64
+	Read       Metrics
+	Write      Metrics
 }
 
-func Start() map[string]NFSStats {
+func Start() []NFSStats {
 	input := `nap:/home/anajafizadeh mounted on /home/anajafizadeh:
 
            ops/s       rpc bklog
@@ -36,7 +47,7 @@ write:             ops/s            kB/s           kB/op         retrans    avg 
                    0.772          31.224          40.453        0 (0.0%)           1.083           4.515           3.397        0 (0.0%)`
 
 	scanner := bufio.NewScanner(strings.NewReader(input))
-	statsMap := make(map[string]NFSStats)
+	var statsList []NFSStats
 	var currentMount string
 	var currentStats NFSStats
 
@@ -45,25 +56,31 @@ write:             ops/s            kB/s           kB/op         retrans    avg 
 
 		if strings.Contains(line, "mounted on") {
 			if currentMount != "" {
-				statsMap[currentMount] = currentStats
+				statsList = append(statsList, currentStats)
 			}
 			parts := strings.Split(line, " mounted on ")
 			currentMount = parts[1]
-			currentStats = NFSStats{MountPoint: currentMount, Read: make(map[string]float64), Write: make(map[string]float64)}
+			currentStats = NFSStats{MountPoint: currentMount}
 		} else if strings.HasPrefix(line, "ops/s") {
 			// Skip header
 		} else if strings.HasPrefix(line, "read:") || strings.HasPrefix(line, "write:") {
 			mode := strings.TrimSuffix(line, ":")
 			scanner.Scan()
 			values := strings.Fields(scanner.Text())
+			metrics := Metrics{
+				OpsPerSec: parseFloat(values[0]),
+				KBPerSec:  parseFloat(values[1]),
+				KBPerOp:   parseFloat(values[2]),
+				Retrans:   parseFloat(strings.Split(values[3], " ")[0]),
+				RTT:       parseFloat(values[4]),
+				Exec:      parseFloat(values[5]),
+				Queue:     parseFloat(values[6]),
+				Errors:    parseFloat(strings.Split(values[7], " ")[0]),
+			}
 			if mode == "read" {
-				currentStats.Read["ops/s"] = parseFloat(values[0])
-				currentStats.Read["kB/s"] = parseFloat(values[1])
-				currentStats.Read["kB/op"] = parseFloat(values[2])
+				currentStats.Read = metrics
 			} else if mode == "write" {
-				currentStats.Write["ops/s"] = parseFloat(values[0])
-				currentStats.Write["kB/s"] = parseFloat(values[1])
-				currentStats.Write["kB/op"] = parseFloat(values[2])
+				currentStats.Write = metrics
 			}
 		} else if line != "" {
 			values := strings.Fields(line)
@@ -75,10 +92,10 @@ write:             ops/s            kB/s           kB/op         retrans    avg 
 	}
 
 	if currentMount != "" {
-		statsMap[currentMount] = currentStats
+		statsList = append(statsList, currentStats)
 	}
 
-	return statsMap
+	return statsList
 }
 
 func parseFloat(value string) float64 {
