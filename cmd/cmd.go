@@ -12,6 +12,6 @@ func CommandList() []CMD {
 	// add more commands to this list as needed.
 	return []CMD{
 		&CMDExporter{},
-		&CMDRequirements{},
+		&CMDHealth{},
 	}
 }
