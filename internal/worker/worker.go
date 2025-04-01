@@ -1,6 +1,8 @@
 package worker
 
 import (
+	"fmt"
+
 	"github.com/amirhnajafiz/nfs-metrics-exporter/internal/worker/parser"
 	"github.com/amirhnajafiz/nfs-metrics-exporter/pkg/execute"
 )
@@ -17,25 +19,26 @@ func Start() error {
 
 	// print the parsed output
 	for _, stat := range stats {
-		println(stat.MountPoint)
-		println(stat.OpsPerSec)
-		println(stat.RPCBklog)
-		println(stat.Read.OpsPerSec)
-		println(stat.Read.KBPerSec)
-		println(stat.Read.KBPerOp)
-		println(stat.Read.Retrans)
-		println(stat.Read.RTT)
-		println(stat.Read.Exec)
-		println(stat.Read.Queue)
-		println(stat.Read.Errors)
-		println(stat.Write.OpsPerSec)
-		println(stat.Write.KBPerSec)
-		println(stat.Write.KBPerOp)
-		println(stat.Write.Retrans)
-		println(stat.Write.RTT)
-		println(stat.Write.Exec)
-		println(stat.Write.Queue)
-		println(stat.Write.Errors)
+		fmt.Println("Path:", stat.Path)
+		fmt.Println("MountPoint:", stat.MountPoint)
+		fmt.Printf("OpsPerSec: %.2f\n", stat.OpsPerSec)
+		fmt.Println("RPCBklog:", stat.RPCBklog)
+		fmt.Printf("Read OpsPerSec: %.2f\n", stat.Read.OpsPerSec)
+		fmt.Printf("Read KBPerSec: %.2f\n", stat.Read.KBPerSec)
+		fmt.Printf("Read KBPerOp: %.2f\n", stat.Read.KBPerOp)
+		fmt.Println("Read Retrans:", stat.Read.Retrans)
+		fmt.Printf("Read RTT: %.2f\n", stat.Read.RTT)
+		fmt.Printf("Read Exec: %.2f\n", stat.Read.Exec)
+		fmt.Println("Read Queue:", stat.Read.Queue)
+		fmt.Println("Read Errors:", stat.Read.Errors)
+		fmt.Printf("Write OpsPerSec: %.2f\n", stat.Write.OpsPerSec)
+		fmt.Printf("Write KBPerSec: %.2f\n", stat.Write.KBPerSec)
+		fmt.Printf("Write KBPerOp: %.2f\n", stat.Write.KBPerOp)
+		fmt.Println("Write Retrans:", stat.Write.Retrans)
+		fmt.Printf("Write RTT: %.2f\n", stat.Write.RTT)
+		fmt.Printf("Write Exec: %.2f\n", stat.Write.Exec)
+		fmt.Println("Write Queue:", stat.Write.Queue)
+		fmt.Println("Write Errors:", stat.Write.Errors)
 	}
 
 	return nil

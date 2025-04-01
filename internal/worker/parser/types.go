@@ -14,9 +14,10 @@ type NFSIoStatMetricsType struct {
 
 // NFSIoStatType represents the NFS IO stats
 type NFSIoStatType struct {
+	Path       string
 	MountPoint string
 	OpsPerSec  float64
 	RPCBklog   float64
-	Read       NFSIoStatMetricsType
-	Write      NFSIoStatMetricsType
+	Read       *NFSIoStatMetricsType
+	Write      *NFSIoStatMetricsType
 }

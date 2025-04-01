@@ -7,13 +7,13 @@ import (
 )
 
 // ParseNFSIoStat parses the NFS IO stats
-func ParseNFSIoStat(input string) []NFSIoStatType {
+func ParseNFSIoStat(input string) []*NFSIoStatType {
 	scanner := bufio.NewScanner(strings.NewReader(input))
 
 	var (
 		currentMount string
-		currentStats NFSIoStatType
-		statsList    []NFSIoStatType
+		currentStats *NFSIoStatType
+		statsList    []*NFSIoStatType
 	)
 
 	for scanner.Scan() {
@@ -23,14 +23,17 @@ func ParseNFSIoStat(input string) []NFSIoStatType {
 			if currentMount != "" {
 				statsList = append(statsList, currentStats)
 			}
+
 			parts := strings.Split(line, " mounted on ")
+			path := parts[0]
 			currentMount = parts[1]
-			currentStats = NFSIoStatType{MountPoint: currentMount}
+			currentStats = &NFSIoStatType{Path: path, MountPoint: currentMount}
 		} else if strings.HasPrefix(line, "ops/s") {
 			// skip header
 		} else if strings.HasPrefix(line, "read:") || strings.HasPrefix(line, "write:") {
 			mode := strings.TrimSuffix(line, ":")
 			scanner.Scan()
+
 			values := strings.Fields(scanner.Text())
 			metrics := NFSIoStatMetricsType{
 				OpsPerSec: ParseFloat(values[0]),
@@ -42,10 +45,11 @@ func ParseNFSIoStat(input string) []NFSIoStatType {
 				Queue:     ParseFloat(values[6]),
 				Errors:    ParseFloat(strings.Split(values[7], " ")[0]),
 			}
+
 			if mode == "read" {
-				currentStats.Read = metrics
+				currentStats.Read = &metrics
 			} else if mode == "write" {
-				currentStats.Write = metrics
+				currentStats.Write = &metrics
 			}
 		} else if line != "" {
 			values := strings.Fields(line)
