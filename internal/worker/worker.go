@@ -1,31 +1,8 @@
 package worker
 
-import (
-	"bufio"
-	"strconv"
-	"strings"
-)
+import "github.com/amirhnajafiz/nfs-metrics-exporter/internal/worker/parser"
 
-type Metrics struct {
-	OpsPerSec float64
-	KBPerSec  float64
-	KBPerOp   float64
-	Retrans   float64
-	RTT       float64
-	Exec      float64
-	Queue     float64
-	Errors    float64
-}
-
-type NFSStats struct {
-	MountPoint string
-	OpsPerSec  float64
-	RPCBklog   float64
-	Read       Metrics
-	Write      Metrics
-}
-
-func Start() []NFSStats {
+func Start() []parser.NFSIoStatType {
 	input := `nap:/home/anajafizadeh mounted on /home/anajafizadeh:
 
            ops/s       rpc bklog
@@ -46,59 +23,5 @@ read:              ops/s            kB/s           kB/op         retrans    avg 
 write:             ops/s            kB/s           kB/op         retrans    avg RTT (ms)    avg exe (ms)  avg queue (ms)          errors
                    0.772          31.224          40.453        0 (0.0%)           1.083           4.515           3.397        0 (0.0%)`
 
-	scanner := bufio.NewScanner(strings.NewReader(input))
-	var statsList []NFSStats
-	var currentMount string
-	var currentStats NFSStats
-
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
-
-		if strings.Contains(line, "mounted on") {
-			if currentMount != "" {
-				statsList = append(statsList, currentStats)
-			}
-			parts := strings.Split(line, " mounted on ")
-			currentMount = parts[1]
-			currentStats = NFSStats{MountPoint: currentMount}
-		} else if strings.HasPrefix(line, "ops/s") {
-			// Skip header
-		} else if strings.HasPrefix(line, "read:") || strings.HasPrefix(line, "write:") {
-			mode := strings.TrimSuffix(line, ":")
-			scanner.Scan()
-			values := strings.Fields(scanner.Text())
-			metrics := Metrics{
-				OpsPerSec: parseFloat(values[0]),
-				KBPerSec:  parseFloat(values[1]),
-				KBPerOp:   parseFloat(values[2]),
-				Retrans:   parseFloat(strings.Split(values[3], " ")[0]),
-				RTT:       parseFloat(values[4]),
-				Exec:      parseFloat(values[5]),
-				Queue:     parseFloat(values[6]),
-				Errors:    parseFloat(strings.Split(values[7], " ")[0]),
-			}
-			if mode == "read" {
-				currentStats.Read = metrics
-			} else if mode == "write" {
-				currentStats.Write = metrics
-			}
-		} else if line != "" {
-			values := strings.Fields(line)
-			if len(values) == 2 {
-				currentStats.OpsPerSec = parseFloat(values[0])
-				currentStats.RPCBklog = parseFloat(values[1])
-			}
-		}
-	}
-
-	if currentMount != "" {
-		statsList = append(statsList, currentStats)
-	}
-
-	return statsList
-}
-
-func parseFloat(value string) float64 {
-	result, _ := strconv.ParseFloat(value, 64)
-	return result
+	return parser.ParseNFSIoStat(input)
 }
