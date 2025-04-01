@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/amirhnajafiz/nfs-metrics-exporter/internal/worker"
 )
 
@@ -13,8 +11,5 @@ func (c *CMDExporter) Command() string {
 }
 
 func (c *CMDExporter) Run() error {
-	m := worker.Start()
-	fmt.Println(m)
-
-	return nil
+	return worker.Start()
 }

@@ -1,27 +1,42 @@
 package worker
 
-import "github.com/amirhnajafiz/nfs-metrics-exporter/internal/worker/parser"
+import (
+	"github.com/amirhnajafiz/nfs-metrics-exporter/internal/worker/parser"
+	"github.com/amirhnajafiz/nfs-metrics-exporter/pkg/execute"
+)
 
-func Start() []parser.NFSIoStatType {
-	input := `nap:/home/anajafizadeh mounted on /home/anajafizadeh:
+func Start() error {
+	// run nfsiostat command
+	output, err := execute.Command("cat", "./example.out")
+	if err != nil {
+		return err
+	}
 
-           ops/s       rpc bklog
-          73.187           0.000
+	// parse the output
+	stats := parser.ParseNFSIoStat(output)
 
-read:              ops/s            kB/s           kB/op         retrans    avg RTT (ms)    avg exe (ms)  avg queue (ms)          errors
-                   0.000           0.000           9.096        0 (0.0%)           2.158           2.225           0.042        0 (0.0%)
-write:             ops/s            kB/s           kB/op         retrans    avg RTT (ms)    avg exe (ms)  avg queue (ms)          errors
-                   0.000           0.000          11.367        0 (0.0%)           0.342           0.421           0.061        0 (0.0%)
+	// print the parsed output
+	for _, stat := range stats {
+		println(stat.MountPoint)
+		println(stat.OpsPerSec)
+		println(stat.RPCBklog)
+		println(stat.Read.OpsPerSec)
+		println(stat.Read.KBPerSec)
+		println(stat.Read.KBPerOp)
+		println(stat.Read.Retrans)
+		println(stat.Read.RTT)
+		println(stat.Read.Exec)
+		println(stat.Read.Queue)
+		println(stat.Read.Errors)
+		println(stat.Write.OpsPerSec)
+		println(stat.Write.KBPerSec)
+		println(stat.Write.KBPerOp)
+		println(stat.Write.Retrans)
+		println(stat.Write.RTT)
+		println(stat.Write.Exec)
+		println(stat.Write.Queue)
+		println(stat.Write.Errors)
+	}
 
-nap:/workloads/sunyibm/ibm2 mounted on /var/lib/kubelet-nfs:
-
-           ops/s       rpc bklog
-          81.835           0.000
-
-read:              ops/s            kB/s           kB/op         retrans    avg RTT (ms)    avg exe (ms)  avg queue (ms)          errors
-                  13.069         207.339          15.866        0 (0.0%)           0.536           0.595           0.032        0 (0.0%)
-write:             ops/s            kB/s           kB/op         retrans    avg RTT (ms)    avg exe (ms)  avg queue (ms)          errors
-                   0.772          31.224          40.453        0 (0.0%)           1.083           4.515           3.397        0 (0.0%)`
-
-	return parser.ParseNFSIoStat(input)
+	return nil
 }
