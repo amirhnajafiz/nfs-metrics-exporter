@@ -7,6 +7,7 @@ require github.com/knadh/koanf/parsers/yaml v0.1.0
 require (
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
+	go.uber.org/multierr v1.10.0 // indirect
 )
 
 require (
@@ -26,6 +27,7 @@ require (
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/common v0.62.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
+	go.uber.org/zap v1.27.0
 	golang.org/x/sys v0.28.0 // indirect
 	google.golang.org/protobuf v1.36.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

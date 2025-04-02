@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"log"
 
 	"github.com/amirhnajafiz/nfs-metrics-exporter/cmd"
 )
@@ -21,6 +22,7 @@ func main() {
 	for _, command := range commands {
 		if command.Command() == *flagCmd {
 			// execute the command
+			log.Printf("Running command: %s\n", command.Command())
 			if err := command.Run(); err != nil {
 				panic(err)
 			}
