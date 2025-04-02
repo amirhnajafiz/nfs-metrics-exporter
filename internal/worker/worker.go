@@ -1,59 +1,79 @@
 package worker
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/amirhnajafiz/nfs-metrics-exporter/internal/metrics"
 	"github.com/amirhnajafiz/nfs-metrics-exporter/internal/worker/parser"
 	"github.com/amirhnajafiz/nfs-metrics-exporter/pkg/execute"
+	"github.com/prometheus/client_golang/prometheus"
 
 	"go.uber.org/zap"
 )
 
+// Worker is a struct that contains necessary components to collect and export metrics
+type Worker struct {
+	Hostname string
+	Logr     *zap.Logger
+	Metrics  *metrics.Metrics
+}
+
 // Start starts the NFS I/O statistics collection at the specified interval
-func Start(interval time.Duration, me *metrics.Metrics, logr *zap.Logger) error {
+func (w *Worker) Start(interval time.Duration) error {
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
 	for range ticker.C {
-		logr.Info("collecting NFS I/O statistics", zap.Duration("interval", interval))
+		w.Logr.Info("collecting NFS I/O statistics", zap.Duration("interval", interval))
 
 		// run the command to collect NFS I/O statistics
 		output, err := execute.Command("cat", "./example.out")
 		if err != nil {
-			logr.Error("failed to execute nfsiostat", zap.Error(err))
+			w.Logr.Error("failed to execute nfsiostat", zap.Error(err))
 			continue
 		}
 
 		// parse the output
 		stats := parser.ParseNFSIoStat(output)
-		logr.Debug("parsed NFS I/O statistics", zap.Any("stats", stats))
+		w.Logr.Debug("parsed NFS I/O statistics", zap.Int("stats", len(stats)))
 
-		// Print the parsed output
+		// convert the stats to prometheus metrics
 		for _, stat := range stats {
-			fmt.Println("Path:", stat.Path)
-			fmt.Println("MountPoint:", stat.MountPoint)
-			fmt.Printf("OpsPerSec: %.2f\n", stat.OpsPerSec)
-			fmt.Println("RPCBklog:", stat.RPCBklog)
-			fmt.Printf("Read OpsPerSec: %.2f\n", stat.Read.OpsPerSec)
-			fmt.Printf("Read KBPerSec: %.2f\n", stat.Read.KBPerSec)
-			fmt.Printf("Read KBPerOp: %.2f\n", stat.Read.KBPerOp)
-			fmt.Println("Read Retrans:", stat.Read.Retrans)
-			fmt.Printf("Read RTT: %.2f\n", stat.Read.RTT)
-			fmt.Printf("Read Exec: %.2f\n", stat.Read.Exec)
-			fmt.Println("Read Queue:", stat.Read.Queue)
-			fmt.Println("Read Errors:", stat.Read.Errors)
-			fmt.Printf("Write OpsPerSec: %.2f\n", stat.Write.OpsPerSec)
-			fmt.Printf("Write KBPerSec: %.2f\n", stat.Write.KBPerSec)
-			fmt.Printf("Write KBPerOp: %.2f\n", stat.Write.KBPerOp)
-			fmt.Println("Write Retrans:", stat.Write.Retrans)
-			fmt.Printf("Write RTT: %.2f\n", stat.Write.RTT)
-			fmt.Printf("Write Exec: %.2f\n", stat.Write.Exec)
-			fmt.Println("Write Queue:", stat.Write.Queue)
-			fmt.Println("Write Errors:", stat.Write.Errors)
+			w.exportToProms(stat)
+			w.Logr.Debug("exported NFS I/O statistics to Prometheus",
+				zap.String("path", stat.Path),
+				zap.String("mounted", stat.MountPoint),
+			)
 		}
 	}
 
 	return nil
+}
+
+// export the NFS IO stats to prometheus metrics
+func (w *Worker) exportToProms(stat *parser.NFSIoStatType) {
+	// create the labels for each observation
+	labels := prometheus.Labels{"node": w.Hostname, "path": stat.Path, "mounted": stat.MountPoint}
+
+	// write the metrics
+	w.Metrics.AverageOperationsPerSecond.With(labels).Add(stat.OpsPerSec)
+	w.Metrics.RPCBklogSize.With(labels).Add(stat.RPCBklog)
+
+	w.Metrics.ReadOperationsRatio.With(labels).Add(stat.Read.OpsPerSec)
+	w.Metrics.ReadLatency.With(labels).Add(stat.Read.KBPerSec)
+	w.Metrics.ReadThroughput.With(labels).Add(stat.Read.KBPerOp)
+	w.Metrics.ReadRetransmits.With(labels).Add(stat.Read.Retrans)
+	w.Metrics.ReadAverageRTT.With(labels).Add(stat.Read.RTT)
+	w.Metrics.ReadAverageExecutionTime.With(labels).Add(stat.Read.Exec)
+	w.Metrics.ReadAverageQueueTime.With(labels).Add(stat.Read.Queue)
+	w.Metrics.ReadErrors.With(labels).Add(stat.Read.Errors)
+
+	w.Metrics.WriteOperationsRatio.With(labels).Add(stat.Write.OpsPerSec)
+	w.Metrics.WriteLatency.With(labels).Add(stat.Write.KBPerSec)
+	w.Metrics.WriteThroughput.With(labels).Add(stat.Write.KBPerOp)
+	w.Metrics.WriteRetransmits.With(labels).Add(stat.Write.Retrans)
+	w.Metrics.WriteAverageRTT.With(labels).Add(stat.Write.RTT)
+	w.Metrics.WriteAverageExecutionTime.With(labels).Add(stat.Write.Exec)
+	w.Metrics.WriteAverageQueueTime.With(labels).Add(stat.Write.Queue)
+	w.Metrics.WriteErrors.With(labels).Add(stat.Write.Errors)
 }
