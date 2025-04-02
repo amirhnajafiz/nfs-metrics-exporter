@@ -16,6 +16,7 @@ const Prefix = "NFS_ME_"
 
 // Config is the configuration struct
 type Config struct {
+	DebugMode      bool   `koanf:"debug_mode"`
 	ExportInterval int    `koanf:"export_interval"`
 	ServicePort    string `koanf:"service_port"`
 }

@@ -7,10 +7,12 @@ import (
 	"github.com/amirhnajafiz/nfs-metrics-exporter/internal/metrics"
 	"github.com/amirhnajafiz/nfs-metrics-exporter/internal/worker/parser"
 	"github.com/amirhnajafiz/nfs-metrics-exporter/pkg/execute"
+
+	"go.uber.org/zap"
 )
 
 // Start starts the NFS I/O statistics collection at the specified interval
-func Start(interval time.Duration, me *metrics.Metrics) error {
+func Start(interval time.Duration, me *metrics.Metrics, logr *zap.Logger) error {
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
