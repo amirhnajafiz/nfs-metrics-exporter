@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"os"
 	"time"
 
 	"github.com/amirhnajafiz/nfs-metrics-exporter/internal/config"
@@ -28,8 +29,18 @@ func (c *CMDExporter) Run() error {
 	// create a new metrics instance
 	me := metrics.NewMetrics()
 
+	// extract the hostname
+	hn, err := os.Hostname()
+	if err != nil {
+		return err
+	}
+
 	// start the metrics server
-	logger.Info("starting metrics server", zap.String("port", cfg.ServicePort))
+	logger.Info("starting metrics server",
+		zap.String("host", hn),
+		zap.String("port", cfg.ServicePort),
+	)
+
 	go func() {
 		if err := metrics.NewServer(cfg.ServicePort, cfg.SecretKey).Start(); err != nil {
 			panic(err)
@@ -38,8 +49,9 @@ func (c *CMDExporter) Run() error {
 
 	// build and start a worker
 	wo := worker.Worker{
-		Logr:    logger.Named("worker"),
-		Metrics: me,
+		Logr:     logger.Named("worker"),
+		Metrics:  me,
+		Hostname: hn,
 	}
 	wo.Start(time.Duration(cfg.ExportInterval) * time.Second)
 
