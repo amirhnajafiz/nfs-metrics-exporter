@@ -17,14 +17,18 @@ func Start(interval time.Duration, me *metrics.Metrics, logr *zap.Logger) error 
 	defer ticker.Stop()
 
 	for range ticker.C {
+		logr.Info("collecting NFS I/O statistics")
+
 		// run the command to collect NFS I/O statistics
 		output, err := execute.Command("cat", "./example.out")
 		if err != nil {
-			return err
+			logr.Error("failed to execute nfsiostat", zap.Error(err))
+			continue
 		}
 
 		// parse the output
 		stats := parser.ParseNFSIoStat(output)
+		logr.Debug("parsed NFS I/O statistics", zap.Any("stats", stats))
 
 		// Print the parsed output
 		for _, stat := range stats {
