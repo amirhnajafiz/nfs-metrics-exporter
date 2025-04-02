@@ -18,6 +18,14 @@ type Server struct {
 func NewServer(address string) Server {
 	srv := http.NewServeMux()
 	srv.Handle("/metrics", promhttp.Handler())
+	srv.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("ok"))
+	})
+	srv.HandleFunc("/readyz", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("ok"))
+	})
 
 	return Server{
 		address: ":" + address,
