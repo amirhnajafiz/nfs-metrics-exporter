@@ -1,0 +1,14 @@
+# This is an example configuration file for an application instance.
+# Copy this file to config.yml and modify it as needed.
+
+# Debugging settings
+debug_mode: true
+
+# Exporter interval for running the nfsiostat (in seconds)
+export_interval: 5
+
+# Exporter HTTP server port
+service_port: 5050
+
+# Service secret key (MD5 hash will be generated from this key)
+secret_key: "mykey"
