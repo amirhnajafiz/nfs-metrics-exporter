@@ -36,8 +36,12 @@ func (c *CMDExporter) Run() error {
 		}
 	}()
 
-	// start the worker
-	worker.Start(time.Duration(cfg.ExportInterval)*time.Second, me, logger)
+	// build and start a worker
+	wo := worker.Worker{
+		Logr:    logger.Named("worker"),
+		Metrics: me,
+	}
+	wo.Start(time.Duration(cfg.ExportInterval) * time.Second)
 
 	return nil
 }
