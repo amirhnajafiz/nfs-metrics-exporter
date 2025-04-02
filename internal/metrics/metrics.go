@@ -8,9 +8,9 @@ import (
 
 var (
 	// Namespace is the namespace for the application metrics
-	Namespace = "nfs-metrics-exporter"
+	Namespace = "NFS"
 	// Subsystem is the subsystem for the application metrics
-	Subsystem = "exporter"
+	Subsystem = "ME"
 	// Labels are the labels for the application metrics
 	Labels = []string{"path", "node", "mounted"}
 )
@@ -61,23 +61,23 @@ func newGaugeVec(name, help string) *prometheus.GaugeVec {
 // NewMetrics initializes and registers the Prometheus metrics for the application
 func NewMetrics() *Metrics {
 	return &Metrics{
-		AverageOperationsPerSecond: newGaugeVec("NFS_ME_average_operations_per_second", "Average operations per second"),
-		RPCBklogSize:               newGaugeVec("NFS_ME_rpc_bklog_size", "RPC backlog size"),
-		ReadOperationsRatio:        newGaugeVec("NFS_ME_read_operations_ratio", "Read operations ratio"),
-		ReadLatency:                newGaugeVec("NFS_ME_read_latency", "Read latency"),
-		ReadThroughput:             newGaugeVec("NFS_ME_read_throughput", "Read throughput"),
-		ReadRetransmits:            newGaugeVec("NFS_ME_read_retransmits", "Read retransmits"),
-		ReadAverageRTT:             newGaugeVec("NFS_ME_read_average_rtt", "Read average RTT"),
-		ReadAverageExecutionTime:   newGaugeVec("NFS_ME_read_average_execution_time", "Read average execution time"),
-		ReadAverageQueueTime:       newGaugeVec("NFS_ME_read_average_queue_time", "Read average queue time"),
-		ReadErrors:                 newGaugeVec("NFS_ME_read_errors", "Read errors"),
-		WriteOperationsRatio:       newGaugeVec("NFS_ME_write_operations_ratio", "Write operations ratio"),
-		WriteLatency:               newGaugeVec("NFS_ME_write_latency", "Write latency"),
-		WriteThroughput:            newGaugeVec("NFS_ME_write_throughput", "Write throughput"),
-		WriteRetransmits:           newGaugeVec("NFS_ME_write_retransmits", "Write retransmits"),
-		WriteAverageRTT:            newGaugeVec("NFS_ME_write_average_rtt", "Write average RTT"),
-		WriteAverageExecutionTime:  newGaugeVec("NFS_ME_write_average_execution_time", "Write average execution time"),
-		WriteAverageQueueTime:      newGaugeVec("NFS_ME_write_average_queue_time", "Write average queue time"),
-		WriteErrors:                newGaugeVec("NFS_ME_write_errors", "Write errors"),
+		AverageOperationsPerSecond: newGaugeVec("average_operations_per_second", "Average operations per second"),
+		RPCBklogSize:               newGaugeVec("rpc_bklog_size", "RPC backlog size"),
+		ReadOperationsRatio:        newGaugeVec("read_operations_ratio", "Read operations ratio"),
+		ReadLatency:                newGaugeVec("read_latency", "Read latency"),
+		ReadThroughput:             newGaugeVec("read_throughput", "Read throughput"),
+		ReadRetransmits:            newGaugeVec("read_retransmits", "Read retransmits"),
+		ReadAverageRTT:             newGaugeVec("read_average_rtt", "Read average RTT"),
+		ReadAverageExecutionTime:   newGaugeVec("read_average_execution_time", "Read average execution time"),
+		ReadAverageQueueTime:       newGaugeVec("read_average_queue_time", "Read average queue time"),
+		ReadErrors:                 newGaugeVec("read_errors", "Read errors"),
+		WriteOperationsRatio:       newGaugeVec("write_operations_ratio", "Write operations ratio"),
+		WriteLatency:               newGaugeVec("write_latency", "Write latency"),
+		WriteThroughput:            newGaugeVec("write_throughput", "Write throughput"),
+		WriteRetransmits:           newGaugeVec("write_retransmits", "Write retransmits"),
+		WriteAverageRTT:            newGaugeVec("write_average_rtt", "Write average RTT"),
+		WriteAverageExecutionTime:  newGaugeVec("write_average_execution_time", "Write average execution time"),
+		WriteAverageQueueTime:      newGaugeVec("write_average_queue_time", "Write average queue time"),
+		WriteErrors:                newGaugeVec("write_errors", "Write errors"),
 	}
 }
