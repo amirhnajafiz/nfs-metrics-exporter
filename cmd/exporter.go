@@ -29,11 +29,8 @@ func (c *CMDExporter) Run() error {
 	// create a new metrics instance
 	me := metrics.NewMetrics()
 
-	// extract the hostname
-	hn, err := os.Hostname()
-	if err != nil {
-		return err
-	}
+	// extract the hostname (node name) from the environment variable
+	hn := os.Getenv("NODE_NAME")
 
 	// start the metrics server
 	logger.Info("starting metrics server",
