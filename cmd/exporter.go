@@ -7,6 +7,7 @@ import (
 	"github.com/amirhnajafiz/nfs-metrics-exporter/internal/worker"
 )
 
+// CMDExporter is a command that starts the exporter
 type CMDExporter struct{}
 
 func (c *CMDExporter) Command() string {
