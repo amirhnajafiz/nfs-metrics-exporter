@@ -17,16 +17,21 @@ type Server struct {
 
 // NewServer creates a new HTTP server for exposing metrics
 func NewServer(address string, secret string) Server {
+	// create a new HTTP server
 	srv := http.NewServeMux()
+	// register the metrics handler
 	srv.Handle("/metrics", promhttp.Handler())
+	// register the health check handler
 	srv.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("ok"))
 	})
+	// register the readiness check handler
 	srv.HandleFunc("/readyz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("ok"))
 	})
+	// register the liveness check handler
 	srv.HandleFunc("/valz", func(w http.ResponseWriter, r *http.Request) {
 		md5 := hashing.MD5([]byte(secret))
 		w.WriteHeader(http.StatusOK)
