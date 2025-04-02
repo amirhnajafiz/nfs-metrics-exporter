@@ -20,7 +20,7 @@ func NewServer(address string) Server {
 	srv.Handle("/metrics", promhttp.Handler())
 
 	return Server{
-		address: address,
+		address: ":" + address,
 		srv:     srv,
 	}
 }

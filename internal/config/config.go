@@ -15,7 +15,9 @@ import (
 const Prefix = "NFS_ME_"
 
 // Config is the configuration struct
-type Config struct{}
+type Config struct {
+	ServicePort string `koanf:"service_port"`
+}
 
 // Load loads the configuration from the file and environment variables
 func Load() Config {
