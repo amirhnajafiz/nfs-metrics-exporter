@@ -1,24 +1,25 @@
 package logr
 
-import "go.uber.org/zap"
+import (
+	"os"
+
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+)
 
 // NewZapLogger creates a new zap logger instance
-func NewZapLogger(debug bool) (*zap.Logger, error) {
-	var (
-		logger *zap.Logger
-		err    error
-	)
-
+func NewZapLogger(debug bool) *zap.Logger {
 	// create a new zap logger instance based on the debug flag
+	var level zapcore.Level
 	if debug {
-		logger, err = zap.NewDevelopment()
+		level = zapcore.DebugLevel
 	} else {
-		logger, err = zap.NewProduction()
+		level = zapcore.InfoLevel
 	}
 
-	if err != nil {
-		return nil, err
-	}
+	encoder := zapcore.NewJSONEncoder(zap.NewDevelopmentEncoderConfig())
+	core := zapcore.NewCore(encoder, zapcore.Lock(os.Stdout), level)
+	logger := zap.New(core, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel))
 
-	return logger, nil
+	return logger
 }

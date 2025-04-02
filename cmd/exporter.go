@@ -23,10 +23,7 @@ func (c *CMDExporter) Run() error {
 	cfg := config.Load()
 
 	// create a new logger instance
-	logger, err := logr.NewZapLogger(cfg.DebugMode)
-	if err != nil {
-		return err
-	}
+	logger := logr.NewZapLogger(cfg.DebugMode)
 
 	// create a new metrics instance
 	me := metrics.NewMetrics()
