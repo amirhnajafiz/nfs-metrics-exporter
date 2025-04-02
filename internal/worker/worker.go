@@ -17,7 +17,7 @@ func Start(interval time.Duration, me *metrics.Metrics, logr *zap.Logger) error 
 	defer ticker.Stop()
 
 	for range ticker.C {
-		logr.Info("collecting NFS I/O statistics")
+		logr.Info("collecting NFS I/O statistics", zap.Duration("interval", interval))
 
 		// run the command to collect NFS I/O statistics
 		output, err := execute.Command("cat", "./example.out")

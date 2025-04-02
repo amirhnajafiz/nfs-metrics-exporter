@@ -29,7 +29,7 @@ func (c *CMDExporter) Run() error {
 	me := metrics.NewMetrics()
 
 	// start the metrics server
-	logger.Info("Starting metrics server", zap.String("port", cfg.ServicePort))
+	logger.Info("starting metrics server", zap.String("port", cfg.ServicePort))
 	go func() {
 		if err := metrics.NewServer(cfg.ServicePort).Start(); err != nil {
 			panic(err)
