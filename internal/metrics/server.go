@@ -26,7 +26,7 @@ func NewServer(address string) Server {
 }
 
 // Start starts the HTTP server
-func (s *Server) Start() error {
+func (s Server) Start() error {
 	srv := http.Server{
 		Addr:         s.address,
 		Handler:      s.srv,

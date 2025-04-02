@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/amirhnajafiz/nfs-metrics-exporter/internal/metrics"
 	"github.com/amirhnajafiz/nfs-metrics-exporter/internal/worker/parser"
 	"github.com/amirhnajafiz/nfs-metrics-exporter/pkg/execute"
 )
 
 // Start starts the NFS I/O statistics collection at the specified interval
-func Start(interval time.Duration) error {
+func Start(interval time.Duration, me *metrics.Metrics) error {
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
