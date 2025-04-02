@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"time"
+
+	"github.com/amirhnajafiz/nfs-metrics-exporter/internal/config"
 	"github.com/amirhnajafiz/nfs-metrics-exporter/internal/worker"
 )
 
@@ -11,5 +14,11 @@ func (c *CMDExporter) Command() string {
 }
 
 func (c *CMDExporter) Run() error {
-	return worker.Start()
+	// load configs
+	cfg := config.Load()
+
+	// start the worker
+	worker.Start(time.Duration(cfg.ExportInterval) * time.Second)
+
+	return nil
 }
