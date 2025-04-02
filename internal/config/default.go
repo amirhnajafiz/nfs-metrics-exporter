@@ -6,5 +6,6 @@ func Default() Config {
 		DebugMode:      false,
 		ExportInterval: 10,
 		ServicePort:    "8080",
+		SecretKey:      "",
 	}
 }

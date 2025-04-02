@@ -19,6 +19,7 @@ type Config struct {
 	DebugMode      bool   `koanf:"debug_mode"`
 	ExportInterval int    `koanf:"export_interval"`
 	ServicePort    string `koanf:"service_port"`
+	SecretKey      string `koanf:"secret_key"`
 }
 
 // Load loads the configuration from the file and environment variables
