@@ -26,4 +26,5 @@ WORKDIR /app/
 
 COPY --from=builder /nfs-metrics-exporter .
 
+CMD ["--cmd", "exporter"]
 ENTRYPOINT ["./nfs-metrics-exporter"]
