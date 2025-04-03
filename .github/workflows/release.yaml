@@ -28,4 +28,4 @@ jobs:
         with:
           push: true
           files: "build/docker-bake.json"
-          targets: ["nfs-metrics-exporter"]
+          targets: "nfs-metrics-exporter"
