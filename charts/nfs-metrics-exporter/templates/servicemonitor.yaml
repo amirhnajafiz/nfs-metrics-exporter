@@ -9,6 +9,7 @@ metadata:
   namespace: {{ $.Release.Namespace }}
   {{- end }}
   labels:
+    release: prometheus
     {{- include "nfs-metrics-exporter.labels" . | nindent 4 }}
 spec:
   endpoints:

@@ -42,6 +42,15 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+# security context configuration
+securityContext:
+  privileged: true
+  runAsUser: 0
+
+# hostPath configuration
+host:
+  nfsiostat: "/usr/sbin/nfsiostat"
+
 # exporter configuration
 config:
   # debugging settings
