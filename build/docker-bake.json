@@ -1,4 +1,9 @@
 {
+    "variable": {
+      "TAG": {
+        "default": "latest"
+      }
+    },
     "group": {
       "default": {
         "targets": ["nfs-metrics-exporter"]
