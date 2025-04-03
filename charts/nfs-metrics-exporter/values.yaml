@@ -26,6 +26,13 @@ service:
   type: ClusterIP
   port: 80
 
+# serviceMonitor configuration
+serviceMonitor:
+  enabled: true
+  namespace: ""
+  interval: ""
+  scrapeTimeout: ""
+
 # exporter configuration
 config:
   # debugging settings
