@@ -9,7 +9,7 @@
             "platforms": ["linux/amd64", "linux/arm64"]
         }
     },
-    "variables": {
+    "variable": {
         "TAG": "latest",
         "NFS_METRICS_EXPORTER_IMAGE": "nfs-metrics-exporter"
     },
