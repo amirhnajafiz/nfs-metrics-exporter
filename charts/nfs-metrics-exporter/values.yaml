@@ -9,6 +9,11 @@ image:
   pullPolicy: IfNotPresent
   tag: "master"
 
+# node selector configuration
+nodeSelector:
+  node-role.kubernetes.io/role: "worker"
+  kubernetes.io/nfsiostat-enabled: "true"
+
 # exporter configuration
 config:
   # debugging settings

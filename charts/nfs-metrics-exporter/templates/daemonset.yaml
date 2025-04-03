@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "nfs-metrics-exporter.fullname" . }}
+  namespace: '{{ .Release.Namespace }}'
+  labels:
+    {{- include "nfs-metrics-exporter.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "nfs-metrics-exporter.labels" . | nindent 4 }}
+  template:
+    metadata:
+      labels:
+        {{- include "nfs-metrics-exporter.labels" . | nindent 4 }}
+    spec:
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      hostPID: true  # needed to access host's process namespace
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        securityContext:
+          privileged: true  # needed for host access
+        ports:
+        - name: metrics
+          containerPort: {{ .Values.config.service_port | default 5050 }}
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: metrics
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: metrics
+        volumeMounts:
+        - name: host-proc
+          mountPath: /proc
+          readOnly: true
+        - name: configuration
+          mountPath: "/usr/local/bin/app/config.yml"
+          subPath: "config.yml"
+          readOnly: true
+      volumes:
+      - name: host-proc
+        hostPath:
+          path: /proc
+      - name: configuration
+        configMap:
+          defaultMode: 0440
+          name: {{ include "nfs-metrics-exporter.fullname" . }}
