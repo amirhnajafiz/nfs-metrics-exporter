@@ -49,14 +49,4 @@ Selector labels
 app.kubernetes.io/name: {{ include "nfs-metrics-exporter.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "nfs-metrics-exporter.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "nfs-metrics-exporter.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
 {{- end }}
