@@ -23,7 +23,7 @@ RUN go build -o /nfs-metrics-exporter
 FROM alpine:3.20
 
 # Set the working directory
-WORKDIR /usr/local/bin
+WORKDIR /usr/local/bin/app
 
 # Copy the binary from the builder stage
 COPY --from=builder /nfs-metrics-exporter .
