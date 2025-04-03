@@ -3,7 +3,19 @@
 fullnameOverride: ""
 nameOverride: ""
 
+# base image configuration
 image:
   repository: ghcr.io/amirhnajafiz/nfs-metrics-exporter
   pullPolicy: IfNotPresent
   tag: "master"
+
+# exporter configuration
+config:
+  # debugging settings
+  debug_mode: true
+  # exporter interval for running the nfsiostat (in seconds)
+  export_interval: 5
+  # exporter HTTP server port
+  service_port: 5050
+  # service secret key (MD5 hash will be generated from this key)
+  secret_key: "mykey"

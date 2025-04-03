@@ -48,5 +48,5 @@ Selector labels
 {{- define "nfs-metrics-exporter.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "nfs-metrics-exporter.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
+app: {{ .Release.Name }}
 {{- end }}
