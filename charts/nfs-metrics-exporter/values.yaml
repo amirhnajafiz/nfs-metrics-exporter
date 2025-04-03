@@ -11,12 +11,12 @@ image:
 
 # node selector configuration
 nodeSelector:
-  node-role.kubernetes.io/role: "worker"
+  node-role.kubernetes.io/worker: "worker"
   kubernetes.io/nfsiostat-enabled: "true"
 
 # tolerations configuration
 tolerations:
-  - key: "node-role.kubernetes.io/role"
+  - key: "node-role.kubernetes.io/master"
     operator: "Equal"
     value: "master"
     effect: "NoSchedule"
