@@ -1,0 +1,25 @@
+{
+    "group": {
+        "default": {
+            "targets": ["nfs-metrics-exporter"]
+        }
+    },
+    "buildx": {
+        "default": {
+            "platforms": ["linux/amd64", "linux/arm64"]
+        }
+    },
+    "vars": {
+        "NFS_METRICS_EXPORTER_VERSION": "latest",
+        "NFS_METRICS_EXPORTER_IMAGE": "nfs-metrics-exporter"
+    },
+    "targets": {
+        "nfs-metrics-exporter": {
+            "context": ".",
+            "dockerfile": "build/Dockerfile",
+            "tags": [
+                "${NFS_METRICS_EXPORTER_IMAGE}:${NFS_METRICS_EXPORTER_VERSION}"
+            ]
+        }
+    }
+}
