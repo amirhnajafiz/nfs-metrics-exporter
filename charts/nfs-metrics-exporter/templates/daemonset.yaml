@@ -8,12 +8,14 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{- include "nfs-metrics-exporter.labels" . | nindent 4 }}
+      {{- include "nfs-metrics-exporter.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "nfs-metrics-exporter.labels" . | nindent 4 }}
+        {{- include "nfs-metrics-exporter.selectorLabels" . | nindent 8 }}
     spec:
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
       nodeSelector:
         {{- toYaml .Values.nodeSelector | nindent 8 }}
       hostPID: true  # needed to access host's process namespace
