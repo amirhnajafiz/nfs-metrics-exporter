@@ -10,7 +10,7 @@
         }
     },
     "vars": {
-        "NFS_METRICS_EXPORTER_VERSION": "latest",
+        "TAG": "latest",
         "NFS_METRICS_EXPORTER_IMAGE": "nfs-metrics-exporter"
     },
     "targets": {
@@ -18,7 +18,7 @@
             "context": ".",
             "dockerfile": "build/Dockerfile",
             "tags": [
-                "${NFS_METRICS_EXPORTER_IMAGE}:${NFS_METRICS_EXPORTER_VERSION}"
+                "${NFS_METRICS_EXPORTER_IMAGE}:${TAG}"
             ]
         }
     }
