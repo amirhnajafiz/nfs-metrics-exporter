@@ -21,8 +21,3 @@ linters:
 issues:
   exclude:
     - "G104" # exclude gosec rule G104 (CWE-703: Errors unhandled)
-
-output:
-  format: colored-line-number
-  print-issued-lines: true
-  uniq-by-line: true
