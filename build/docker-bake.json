@@ -10,8 +10,12 @@
         }
     },
     "variable": {
-        "TAG": "latest",
-        "NFS_METRICS_EXPORTER_IMAGE": "nfs-metrics-exporter"
+        "TAG": {
+            "default": "latest"
+        },
+        "NFS_METRICS_EXPORTER_IMAGE": {
+            "default": "ghcr.io/amirhnajafiz/nfs-metrics-exporter"
+        }
     },
     "targets": {
         "nfs-metrics-exporter": {
