@@ -26,8 +26,8 @@ func (w *Worker) Start(interval time.Duration) error {
 	for range ticker.C {
 		w.Logr.Info("collecting NFS I/O statistics", zap.Duration("interval", interval))
 
-		// run the command to collect NFS I/O statistics
-		output, err := execute.Command("nfsiostat", "1", "1")
+		// run the command to collect NFS I/O statistics using nsenter
+		output, err := execute.Command("nsenter", "--mount=/proc/1/ns/mnt", "nfsiostat", "1", "1")
 		if err != nil {
 			w.Logr.Error("failed to execute nfsiostat", zap.Error(err))
 			continue

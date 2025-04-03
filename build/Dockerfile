@@ -22,6 +22,9 @@ RUN go build -o /nfs-metrics-exporter
 # Second stage
 FROM alpine:3.20
 
+# Install nsenter to allow the container to access the host's namespaces
+RUN apk add --no-cache util-linux
+
 # Set the working directory
 WORKDIR /usr/local/bin/app
 
