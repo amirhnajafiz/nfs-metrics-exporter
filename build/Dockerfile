@@ -2,7 +2,7 @@
 FROM golang:1.24-alpine3.20 AS builder
 
 # Set the Current Working Directory inside the container
-WORKDIR /app
+WORKDIR /src/app
 
 # Installing Git for alpine
 RUN apk add --no-cache git
@@ -17,14 +17,14 @@ RUN go mod download
 COPY . .
 
 # Build the Go app
-WORKDIR /app/cmd/nfs-metrics-exporter
 RUN go build -o /nfs-metrics-exporter
 
+# Second stage
 FROM alpine:3.20
 
-WORKDIR /app/
+WORKDIR /usr/local/bin/nfs-metrics-exporter
 
-COPY --from=builder /nfs-metrics-exporter .
+COPY --from=builder /nfs-metrics-exporter /nfs-metrics-exporter
 
 CMD ["--cmd", "exporter"]
 ENTRYPOINT ["./nfs-metrics-exporter"]

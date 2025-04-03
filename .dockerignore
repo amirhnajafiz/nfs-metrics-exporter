@@ -1,0 +1,10 @@
+# workflows
+.github/
+
+# deployment and configs
+config/
+charts/
+
+# build artifacts
+build/
+dist/
