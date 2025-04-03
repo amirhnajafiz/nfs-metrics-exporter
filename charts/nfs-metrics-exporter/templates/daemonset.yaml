@@ -19,6 +19,8 @@ spec:
       nodeSelector:
         {{- toYaml .Values.nodeSelector | nindent 8 }}
       hostPID: true  # needed to access host's process namespace
+      resources:
+        {{- toYaml .Values.resources | nindent 8 }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
