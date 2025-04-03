@@ -2,28 +2,20 @@ name: lint
 
 on:
   pull_request:
-    branches:
-      - master
+    branches: [master]
   push:
-    branches:
-      - master
+    branches: [master]
 
 jobs:
   lint:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.24.1' # specify a compatible Go version
-
-      - name: Install Dependencies
-        run: go mod tidy
-
+          go-version: '1.24.1'  # match your Go version
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
-          version: v2.0.2 # pin a specific stable version of golangci-lint
-          args: ./... # ensure all directories are scanned
+          version: v2.0.2  # explicit version for stability
+          args: --format=github-actions ./...  # critical fix here (from v.1.X to v.2.X)
