@@ -23,8 +23,11 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        securityContext:
-          privileged: true  # needed for host access
+        env:
+        - name: "NODE_NAME"
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
         ports:
         - name: metrics
           containerPort: {{ .Values.config.service_port | default 5050 }}
@@ -38,17 +41,11 @@ spec:
             path: /readyz
             port: metrics
         volumeMounts:
-        - name: host-proc
-          mountPath: /proc
-          readOnly: true
         - name: configuration
           mountPath: "/usr/local/bin/app/config.yml"
           subPath: "config.yml"
           readOnly: true
       volumes:
-      - name: host-proc
-        hostPath:
-          path: /proc
       - name: configuration
         configMap:
           defaultMode: 0440
