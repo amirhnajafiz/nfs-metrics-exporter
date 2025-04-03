@@ -1,29 +1,17 @@
 {
     "group": {
-        "default": {
-            "targets": ["nfs-metrics-exporter"]
-        }
+      "default": {
+        "targets": ["nfs-metrics-exporter"]
+      }
     },
-    "buildx": {
-        "default": {
-            "platforms": ["linux/amd64", "linux/arm64"]
-        }
-    },
-    "variable": {
-        "TAG": {
-            "default": "latest"
-        },
-        "NFS_METRICS_EXPORTER_IMAGE": {
-            "default": "ghcr.io/amirhnajafiz/nfs-metrics-exporter"
-        }
-    },
-    "targets": {
-        "nfs-metrics-exporter": {
-            "context": ".",
-            "dockerfile": "build/Dockerfile",
-            "tags": [
-                "${NFS_METRICS_EXPORTER_IMAGE}:${TAG}"
-            ]
-        }
+    "target": {
+      "nfs-metrics-exporter": {
+        "context": ".",
+        "dockerfile": "build/Dockerfile",
+        "platforms": ["linux/amd64", "linux/arm64"],
+        "tags": ["ghcr.io/amirhnajafiz/nfs-metrics-exporter:${TAG}"],
+        "output": ["type=registry"]
+      }
     }
-}
+  }
+  

@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Set image tag value
         id: vars
         run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
@@ -26,7 +28,4 @@ jobs:
         with:
           push: true
           files: "build/docker-bake.json"
-      - uses: docker/bake-action@v6
-        with:
-          push: true
-          files: "build/docker-bake.json"
+          targets: ["nfs-metrics-exporter"]
