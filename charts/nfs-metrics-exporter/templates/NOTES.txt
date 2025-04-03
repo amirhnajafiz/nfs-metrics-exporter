@@ -1,2 +1,5 @@
+1. NFS Metrics Exporter is deployed on the nodes with following labels:
+{{- toYaml .Values.nodeSelector | nindent 4 }}
+2. Check the pods:
 kubectl --namespace {{ .Release.Namespace }} get daemonset -l app.kubernetes.io/instance={{ .Release.Name }}
 kubectl --namespace {{ .Release.Namespace }} get pods -l app.kubernetes.io/instance={{ .Release.Name }}
