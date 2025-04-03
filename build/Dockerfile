@@ -22,9 +22,12 @@ RUN go build -o /nfs-metrics-exporter
 # Second stage
 FROM alpine:3.20
 
-WORKDIR /usr/local/bin/nfs-metrics-exporter
+# Set the working directory
+WORKDIR /usr/local/bin
 
-COPY --from=builder /nfs-metrics-exporter /nfs-metrics-exporter
+# Copy the binary from the builder stage
+COPY --from=builder /nfs-metrics-exporter .
 
-CMD ["--cmd", "exporter"]
+# Set the entrypoint and default command
 ENTRYPOINT ["./nfs-metrics-exporter"]
+CMD ["--cmd", "exporter"]
