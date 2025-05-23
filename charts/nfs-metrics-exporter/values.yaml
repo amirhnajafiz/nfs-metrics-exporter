@@ -47,10 +47,6 @@ securityContext:
   privileged: true
   runAsUser: 0
 
-# hostPath configuration
-host:
-  nfsiostat: "/usr/sbin/nfsiostat"
-
 # exporter configuration
 config:
   # debugging settings

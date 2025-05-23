@@ -45,18 +45,11 @@ spec:
             path: /readyz
             port: metrics
         volumeMounts:
-        - name: host-bin
-          mountPath: /usr/sbin/nfsiostat
-          readOnly: true
         - name: configuration
           mountPath: "/usr/local/bin/app/config.yml"
           subPath: "config.yml"
           readOnly: true
       volumes:
-      - name: host-bin
-        hostPath:
-          path: {{ .Values.host.nfsiostat | default "/usr/sbin/nfsiostat" }}
-          type: File
       - name: configuration
         configMap:
           defaultMode: 0440
